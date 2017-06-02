@@ -1,63 +1,41 @@
 import React from 'react';
 import fetchJsonp from 'fetch-jsonp';
 require('es6-promise').polyfill();
+import { Link } from 'react-router-dom';
+import style from '../css/show.css';
+import Prism from 'prismjs';
+
 export default class Detail extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {data:{}}
 		this.getData();
 	}
-	render(){
-		const style = {
-			main:{
-				width:'100%',
-				background:'#f8f5f2',
-				margin:'50px 0 40px 0',
-				padding:'15px',
-				boxSizing:'border-box',
-				fontSize:'14px',
-				position:'relative',
-			},
-			title:{
-				fontSize:'20px',
-				fontStyle:'italic',
-				fontWeight:'bold',
-				textShadow:'3px 4px 1px rgba(107, 105, 105, 0.39)',
-				marginBottom:'30px',
-			},
-			meta:{
-				width:'20%',
-				position:'absolute',
-				right:'20px',
-				fontSize:'12px',
-				fontWeight:'bold',
-				lineHeight:'18px',
-				textAlign:'right',
-			},
-			content:{
-				position:'relative',
-				width:'70%',
-			},
-			abs:{
-				textIndent:'24px',
+	componentDidMount(){
+		var pres = this._content.getElementsByTagName('pre');
+		setTimeout(()=>{
+			for (var i = 0; i < pres.length; i++) {
+				pres[i].className='language-markup'
 			}
-
-		};
+		},2000)
+		
+	}
+	render(){
 		const data = this.state.data; 
 		data.__html = data.content;
 		var user = data.user;
+
 		return (
-			<div style={style.main}>
-				<div style={style.title} >
-					{data.title}
+			<div className={style.main}>
+				<div className={style.title} >
+					<Link to={'/'}>{data.title}</Link>
 				</div>
-				<div style={style.meta} >
+				<div className={style.meta} >
 				Author：{data.user?data.user.nickname:'清尘'}<br/>
 				Count：{data.click}<br/>
 				Tag：{data.tags}<br/><br/>
-				<div style={style.abs}>{data.abstract}</div>
 				</div>
-				<div style={style.content}  dangerouslySetInnerHTML={data}></div>
+				<div ref={(div)=>this._content=div} className={style.content}  dangerouslySetInnerHTML={data}></div>
 			</div>
 		)
 	}

@@ -10,22 +10,28 @@ export default class Blog extends React.Component {
     super(props);
     
     this.state = {blogs:[],totalWidth:'',totalHeight:'500px',colWidth:'',};
-
     this.col = this.defaultCol = 3;
     this.gapX = 20;
     this.gapY = 30;
     this.page = 1;
     this.lock = false;
+    this.fetchLock = false;
     this.heights = [];
 
     this.init = this.init.bind(this);
   }
+
   componentDidMount(){
     var total_width = this._list.clientWidth;
     var lis = this._list.getElementsByTagName('li');
     this.init();
     this.listener();
-    this.getData();
+    this.getData((data)=>this.renderOneByOne(data,0)); 
+  }
+  componentWillUnmount(){
+    clearTimeout(this.timmerOneByOne);
+    window.removeEventListener('scroll',this.scrollEve);
+    window.removeEventListener('resize',this.resizeEve);
   }
   render(){  
     const styles = {
@@ -40,19 +46,19 @@ export default class Blog extends React.Component {
 
       <Index>
       <ul ref={el=>this._list=el} className={style.list} style={styles.list}>
-      {this.state.blogs.map( (blog,index) =>
-        <li key={index} className={style.li} style={styles.li} >
+      {this.state.blogs.map( blog=>
+        <li key={blog.id} className={style.li} style={styles.li} onClick={()=>this.showBlog(blog.id)}>
         
         <div className={style.pic}>
           <img className={style.img} src={blog.img} />
         </div>
         <div className={style.content}>
-          <Link to='/show'><p className={style.titlep}>{blog.title}</p></Link>
+          <p className={style.titlep}>{blog.title}</p>
           <p className={style.contentp}>{blog.content}</p>
           <div className={style.meta}>
 
-          {blog.tagsarr.map(tag=>
-            <span className={style.tag}>{tag}</span> 
+          {blog.tagsarr.map( tag=>
+            <span key={tag} className={style.tag}>{tag}</span> 
           )}
 
             <span className={style.click}>{blog.click}</span>
@@ -69,7 +75,8 @@ export default class Blog extends React.Component {
   }
 
   showBlog(id){
-    window.location.href='/show'
+    this.props.history.push('/show/'+id)
+    // this.props.history.replace('/show')
   }
 
   pushBlog(data){
@@ -92,15 +99,16 @@ export default class Blog extends React.Component {
     this.scrollEve = ()=>{
       var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
       if(scrollTop >= document.body.clientHeight-window.screen.height-200){
-        if (this.lock == false) {
+        if (this.lock == false&&this.fetchLock == false) {
           this.lock = true;
-          this.getData();     
+          this.fetchLock = true;
+          this.getData((data)=>this.renderOneByOne(data,0));     
         }
       }
     }
     window.addEventListener('scroll',this.scrollEve);
 
-    window.addEventListener('resize',()=>{
+    this.resizeEve = ()=>{
       this.init();
       if(!this.timerid){
         this.timerid = setTimeout(()=>{
@@ -109,10 +117,10 @@ export default class Blog extends React.Component {
           clearTimeout(this.timerid);
           this.timerid = null;
         },500);
+      }   
+    }
 
-      }
-      
-    });
+    window.addEventListener('resize',this.resizeEve);
   }
 
   /*  
@@ -166,13 +174,14 @@ export default class Blog extends React.Component {
       var lis = this._list.getElementsByTagName('li');
       var img = lis[lis.length-1].getElementsByTagName('img')[0];
       this.imgLoaded(img,()=>this.waterAll(lis));
-      setTimeout(()=>{this.renderOneByOne(data,++i)},200);
+      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)},200);
     }
     var maxHeight = Math.max.apply(null,this.heights);
     this.setState({totalHeight:maxHeight+'px'}); 
   }
 
-  getData(){
+  getData(callback){
+    this.fetchLock = true;
     var url = 'http://zmhjy.xyz/api/blogs';
     var count = 4;
     var query = '?page='+this.page+'&count='+count;
@@ -188,7 +197,8 @@ export default class Blog extends React.Component {
         data[i].img = 'http://zmhjy.xyz/'+data[i].thumb_img;
         data[i].content = data[i].abstract;
       }
-      this.renderOneByOne(data,0);
+      callback(data);
+      this.fetchLock = false;
       this.page+=1;
       this.lock=false;
       if (json.next_page_url===null) {

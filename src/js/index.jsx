@@ -26,8 +26,9 @@ export default class Index extends React.Component {
       },
       main:{
         overflow:'hidden',
-        backgroundImage: 'url(img/main-bg.png), url(img/main-bg.png)',
+        backgroundImage: 'url(/img/main-bg.png), url(/img/main-bg.png)',
         backgroundRepeat: 'repeat-x, repeat-x',
+        backgroundPosition: 'bottom left, top left',
       }
     }
     return (

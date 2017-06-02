@@ -17,6 +17,13 @@ export default class Slider extends React.Component {
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.nextIndex].style.opacity = 0;
     this.intervalId = setInterval(this.changeImage,this.interval);
+    var img = this['li'+this.curIndex].getElementsByTagName('img')[0];
+    var check = setInterval(()=>{
+      if (img.complete) {
+        this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
+        clearInterval(check);
+      }
+    },100)
     
   }
   componentWillUnmount(){
@@ -31,7 +38,6 @@ export default class Slider extends React.Component {
     }else{
       this.nextIndex=0;
     }
-    this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
     this['li'+this.prevIndex].style.zIndex = 101;
     this.timerid = setTimeout(()=>{
       this['li'+this.prevIndex].style.zIndex = 100;
@@ -40,9 +46,7 @@ export default class Slider extends React.Component {
 
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.curIndex].style.opacity = 1;
-
     this['li'+this.nextIndex].style.opacity = 0;
-
   }
 
 
