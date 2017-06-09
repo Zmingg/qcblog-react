@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 import fetchJsonp from 'fetch-jsonp';
 import style from '../css/blog.css';
 import Index from './index.jsx';
 require('es6-promise').polyfill();
 import { Link } from 'react-router-dom';
+var defaultImg = require('../img/thumb_default.jpg')
 
-export default class Blog extends React.Component {
+export default class Blog extends Component {
   constructor(props){
     super(props);
     
@@ -16,9 +17,7 @@ export default class Blog extends React.Component {
     this.page = 1;
     this.lock = false;
     this.fetchLock = false;
-    this.heights = [];
-
-    this.init = this.init.bind(this);
+    this.heights = []
   }
 
   componentDidMount(){
@@ -75,8 +74,7 @@ export default class Blog extends React.Component {
   }
 
   showBlog(id){
-    this.props.history.push('/show/'+id)
-    // this.props.history.replace('/show')
+    this.props.history.push('/show/'+id);
   }
 
   pushBlog(data){
@@ -130,7 +128,7 @@ export default class Blog extends React.Component {
   */
   imgLoaded(img,cb){
     img.onerror=()=>{
-      img.src='http://zmhjy.xyz/ass_ama/img/thumb_default.jpg';
+      img.src=defaultImg;
       img.onerror=null;
     } 
     var check = setInterval(()=>{

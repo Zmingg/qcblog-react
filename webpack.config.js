@@ -16,8 +16,8 @@ module.exports = {
       	test: /\.(js|jsx)$/, 
       	loader: "babel-loader",
       	options: {
-		    presets: ["react","es2015"]
-		}
+  		    presets: ["react","es2015","stage-0"]
+  		  }
       },
       {
         test: /\.css$/,
@@ -31,18 +31,32 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.(jpg|png)$/, 
+        loader: "url-loader",
+        options: {
+          limit:8192,
+          name:'img/[name]_[hash:8].[ext]'
+        }
       }
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('develop'),
+      }
+    }),
     new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor'],
+        minChunks: Infinity,
     }),
     // new webpack.optimize.UglifyJsPlugin({
     //   compress: {
     //     warnings: false
     //   }
-    // })
+    // }),
   ],
   devServer: {
     contentBase: './dist',

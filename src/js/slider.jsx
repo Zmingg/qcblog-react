@@ -10,7 +10,7 @@ export default class Slider extends React.Component {
     this.nextIndex = 1
     this.prevIndex = this.imgs.length-1;
     this.changeImage = this.changeImage.bind(this);
-    this.state = {height:''};
+    this.state = {height:'400px'};
   }
 
   componentDidMount(){
@@ -28,6 +28,7 @@ export default class Slider extends React.Component {
   }
   componentWillUnmount(){
     clearInterval(this.intervalId);
+    clearTimeout(this.timerid);
   }
 
   changeImage(){

@@ -10,7 +10,7 @@ export default class Header extends React.Component {
         width: '100%',
         height:'50px',
         background: '#2d2d2d',
-        boxShadow: '0px 6px 12px 3px rgba(21, 21, 21, 0.75)',
+        boxShadow: '0px 3px 5px 0px rgba(21, 21, 21, 0.75)',
         zIndex: 9999,
         position: 'fixed',
         top:0,

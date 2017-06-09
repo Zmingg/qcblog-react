@@ -1,8 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { combineReducers,createStore } from 'redux';
+import { Provider } from 'react-redux';
 import Show from './show.jsx';
-import Blog from './blog.jsx';
-import Clock from './clock.jsx';
+import Blog from './blog';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -11,8 +13,8 @@ import {
 import createBrowserHistory from 'history/createBrowserHistory'
 const newHistory = createBrowserHistory();
 
-ReactDOM.render((
-<Router history={newHistory}>
+render((
+<Router history={newHistory}  basename='/app2'>
     <div>
 <Route exact path="/" component={Blog}/>
 <Route path="/show/:id" component={Show}/>
@@ -21,3 +23,34 @@ ReactDOM.render((
 ),document.getElementById('app')
 );
 
+
+
+// import Counter from './components/Counter'
+// import counter from './reducers/index'
+// import { addCount } from './actions'
+// const store = createStore(counter)
+// const rootEl = document.getElementById('app')
+// console.log(store.getState())
+// const ren = ()=>render(
+//   <Counter
+//     value={store.getState().value}
+//     onIncrement={() => store.dispatch(addCount(3))}
+//     onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
+//   />,
+//   rootEl
+// )
+// ren()
+// store.subscribe(ren)
+
+// import todoApp from './reducers'
+// import App from './containers/App'
+
+// let store = createStore(todoApp)
+
+// let rootElement = document.getElementById('app')
+// render(
+//   (<Provider store={store}>
+//     <App />
+//   </Provider>),
+//   rootElement
+// )

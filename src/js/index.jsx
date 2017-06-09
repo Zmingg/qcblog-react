@@ -1,10 +1,10 @@
-import React from 'react';
-import Blog from './blog.jsx';
+import React, { Component } from 'react';
 import Header from './header.jsx';
 import Footer from './footer.jsx';
 import Slider from './slider.jsx';
 
-export default class Index extends React.Component {
+
+export default class Index extends Component {
   constructor(props){
     super(props);
   }
@@ -14,34 +14,30 @@ export default class Index extends React.Component {
       {src:'http://zmhjy.xyz/app/assets/img/bing-2.jpg'},
       {src:'http://zmhjy.xyz/app/assets/img/bing-3.jpg'}
     ];
+    var mainbg = require('../img/main-bg.png');
     const style = {
       box:{
         paddingTop:'50px',
-      },
-      header:{
-
       },
       slider:{
         backgroundColor:'#2d2d2d',
       },
       main:{
         overflow:'hidden',
-        backgroundImage: 'url(/img/main-bg.png), url(/img/main-bg.png)',
+        backgroundImage: 'url('+mainbg+'),url('+mainbg+')',
         backgroundRepeat: 'repeat-x, repeat-x',
         backgroundPosition: 'bottom left, top left',
       }
     }
     return (
       <div style={style.box}>
-      <div style={style.header}>
-        <Header />
-        <div style={style.slider}>
-          <Slider imgs={imgs} config={{interval:3000,transition:500}} />
+        <Header style={style.header} />
+        <div style={style.slider} >
+        <Slider imgs={imgs} config={{interval:3000,transition:500}} />
         </div>
-      </div>
-      <div style={style.main}>
-        {this.props.children}
-      </div>
+        <div style={style.main}>
+          {this.props.children}
+        </div>
       <Footer />
       </div>
       
