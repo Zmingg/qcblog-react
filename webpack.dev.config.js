@@ -1,7 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 
 module.exports = {
   
@@ -12,7 +10,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: '[name].js'
   },
 
   module: {
@@ -25,11 +23,24 @@ module.exports = {
   		  }
       },
       {
+        test: /\.css$/,
+        use:[
+          { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+              localIdentName: '[name]-[local]-[hash:base64:5]'
+            }
+          }
+        ]
+      },
+      {
         test: /\.(jpg|png)$/, 
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'/assets/img/[name]_[hash:8].[ext]'
+          name:'img/[name]_[hash:8].[ext]'
         }
       },
       {
@@ -37,23 +48,24 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'/assets/font/[name]_[hash:8].[ext]'
+          name:'font/[name]_[hash:8].[ext]'
         }
       },
       {
         test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [{
-              loader: "css-loader",
-              options: {
-                modules: true,
-                localIdentName: '[name]-[local]-[hash:base64:5]'
-              }
-          }, {
-              loader: "sass-loader"
-          }],
-          fallback: "style-loader"
-        })
+        use: [
+          {loader: "style-loader" }, 
+          {
+            loader: "css-loader", // 将 CSS 转化成 CommonJS 模块
+            options: {
+              modules: true,
+              localIdentName: '[name]-[local]-[hash:base64:5]'
+            }
+          }, 
+          {
+            loader: "sass-loader" // 将 Sass 编译成 CSS
+          }
+        ]
       }
     ]
   },
@@ -61,19 +73,14 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
+        NODE_ENV: JSON.stringify('development'),
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
         names: ['vendor'],
         minChunks: Infinity,
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    }),
-    new ExtractTextPlugin("/assets/css/styles.css")
+
   ],
 
   devServer: {

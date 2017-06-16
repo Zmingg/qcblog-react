@@ -1,56 +1,42 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { combineReducers,createStore } from 'redux';
+import { combineReducers,createStore,applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import Show from './show.jsx';
-import Blog from './blog';
-
+import Show from './containers/Show';
+import Blog from './containers/Blog';
+import Index from './components/Index';
+import 'font-awesome-webpack';
+import 'babel-polyfill'
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 import {
   BrowserRouter as Router,
-  Route,
-  Link
+  Route
 } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 const newHistory = createBrowserHistory();
 
-render((
-<Router history={newHistory}  basename='/app2'>
-    <div>
-<Route exact path="/" component={Blog}/>
-<Route path="/show/:id" component={Show}/>
+import { getHotBlogs,requestFetch } from './actions'
+import App from './reducers'
+import thunkMiddleware from 'redux-thunk'
+
+const hismiddleware = routerMiddleware(newHistory)
+let createStoreWithMiddleware = applyMiddleware(thunkMiddleware,hismiddleware)(createStore)
+
+const store = createStoreWithMiddleware(App);
+
+const style = require('../scss/app.scss')
+
+const Root = ({ store }) => (
+  <Provider store={store}>
+    <ConnectedRouter history={newHistory}>
+    <div className={style.app}>
+    <Index>
+      <Route exact path="/app2" component={Blog} />
+      <Route path="/app2/show/:id" component={Show} />
+    </Index>
     </div>
-</Router>
-),document.getElementById('app')
+    </ConnectedRouter>
+  </Provider>
 );
 
-
-
-// import Counter from './components/Counter'
-// import counter from './reducers/index'
-// import { addCount } from './actions'
-// const store = createStore(counter)
-// const rootEl = document.getElementById('app')
-// console.log(store.getState())
-// const ren = ()=>render(
-//   <Counter
-//     value={store.getState().value}
-//     onIncrement={() => store.dispatch(addCount(3))}
-//     onDecrement={() => store.dispatch({ type: 'DECREMENT' })}
-//   />,
-//   rootEl
-// )
-// ren()
-// store.subscribe(ren)
-
-// import todoApp from './reducers'
-// import App from './containers/App'
-
-// let store = createStore(todoApp)
-
-// let rootElement = document.getElementById('app')
-// render(
-//   (<Provider store={store}>
-//     <App />
-//   </Provider>),
-//   rootElement
-// )
+render(<Root store={store}/>,document.getElementById('app'))

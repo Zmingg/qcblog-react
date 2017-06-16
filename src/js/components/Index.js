@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Header from './header.jsx';
-import Footer from './footer.jsx';
-import Slider from './slider.jsx';
+import Header from './Header';
+import Footer from './Footer';
+import Slider from './Slider';
 
 
 export default class Index extends Component {
@@ -14,7 +14,7 @@ export default class Index extends Component {
       {src:'http://zmhjy.xyz/app/assets/img/bing-2.jpg'},
       {src:'http://zmhjy.xyz/app/assets/img/bing-3.jpg'}
     ];
-    var mainbg = require('../img/main-bg.png');
+    var mainbg = require('../../img/main-bg.png');
     const style = {
       box:{
         paddingTop:'50px',
@@ -29,6 +29,7 @@ export default class Index extends Component {
         backgroundPosition: 'bottom left, top left',
       }
     }
+    
     return (
       <div style={style.box}>
         <Header style={style.header} />

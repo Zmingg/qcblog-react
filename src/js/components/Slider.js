@@ -1,6 +1,6 @@
-import React from 'react';
+import React,{Component} from 'react';
 
-export default class Slider extends React.Component {
+export default class Slider extends Component {
   constructor(props){
     super(props);
   	this.imgs = this.props.imgs;

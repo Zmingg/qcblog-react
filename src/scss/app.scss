@@ -1,0 +1,42 @@
+
+
+
+@mixin keyframes($animationName) { 
+	@keyframes #{$animationName} { 
+		@content; 
+	}
+}
+
+.app {
+    animation: moveToLeft 1s ease both;
+    @include keyframes(moveToLeft) { 
+    	0% { 
+    		transform: translateY(100%); 
+    		opacity: 0;
+    	} 
+    	100% { 
+    		transform: translateX(0); 
+    		opacity: 1;
+    	} 
+    }
+
+    list-style-type: none;
+    text-decoration: none;
+    font-family: MicrosoftYaHei,微软雅黑,SimSun,Arial,sans-serif;
+    color: #656360;
+    background: #f1ede8 url(../img/noise-all.png);
+
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background: #333;
+        color: #d4d4d4;
+        padding: 0 0.5em;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+     
+}

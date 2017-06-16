@@ -1,48 +1,61 @@
 import { combineReducers } from 'redux'
-import { ADD_TODO, COMPLETE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters } from '../actions'
-import { connect } from 'react-redux'
-const { SHOW_ALL } = VisibilityFilters
-
-function visibilityFilter(state = SHOW_ALL, action) {
+import { routerReducer } from 'react-router-redux'
+function getBlogs(state = {
+  isFetching: false,
+  hasMore: true,
+  items: []
+}, action) {
   switch (action.type) {
-    case SET_VISIBILITY_FILTER:
-      return action.filter
-    default:
+    case 'RequestFetch':
+      return Object.assign({}, state, {
+        isFetching: true,
+      })
+    case 'ReceiveData':
+      return Object.assign({}, state, {
+        isFetching: false,
+        items: action.posts,
+        hasMore: action.hasMore,
+        lastUpdated: action.receivedAt
+      })
 
-      return state
-  }
-}
-
-function todos(state = [{
-	text: 'tttttt',
-    completed: false
-  }], action) {
-  switch (action.type) {
-    case ADD_TODO:
-
-      return [
-        ...state,
-        {
-          text: action.text,
-          completed: false
-        }
-      ]
-    case COMPLETE_TODO:
-      return [
-        ...state.slice(0, action.index),
-        Object.assign({}, state[action.index], {
-          completed: true
-        }),
-        ...state.slice(action.index + 1)
-      ]
     default:
       return state
   }
 }
 
-const todoApp = combineReducers({
-  visibilityFilter,
-  todos
+function blogsPush(state = {}, action) {
+  switch (action.type) {
+    case 'RequestFetch':
+    case 'ReceiveData':
+      return Object.assign({}, state, getBlogs(state, action))
+    default:
+      return state
+  }
+}
+
+function currentBlog(state = {isFetching:false}, action){
+  switch (action.type) {
+    case 'RequestOne':
+      return Object.assign({}, state, {
+        isFetching: true
+      })
+    case 'ReceiveOne':
+      return Object.assign({}, state, {
+        isFetching: false,
+        data: action.data,
+        version: action.receivedAt
+      })
+    default:
+      return state
+  }
+}
+
+const rootReducer = combineReducers({
+  blogsPush,
+  currentBlog,
+  router: routerReducer
 })
 
-export default todoApp
+
+
+export default rootReducer

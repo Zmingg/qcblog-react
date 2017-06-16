@@ -1,38 +1,32 @@
 import React, { Component } from 'react';
-import fetchJsonp from 'fetch-jsonp';
-import style from '../css/blog.css';
-import Index from './index.jsx';
-require('es6-promise').polyfill();
+import style from '../../scss/blog.scss';
 import { Link } from 'react-router-dom';
-var defaultImg = require('../img/thumb_default.jpg')
+const defaultImg = require('../../img/thumb_default.jpg');
 
-export default class Blog extends Component {
+export default class Bloglist extends Component {
   constructor(props){
     super(props);
-    
-    this.state = {blogs:[],totalWidth:'',totalHeight:'500px',colWidth:'',};
+
+    this.state = {blogs:[],totalWidth:'',totalHeight:'500px',colWidth:'',};  
     this.col = this.defaultCol = 3;
     this.gapX = 20;
     this.gapY = 30;
     this.page = 1;
-    this.lock = false;
-    this.fetchLock = false;
     this.heights = []
   }
 
-  componentDidMount(){
-    var total_width = this._list.clientWidth;
-    var lis = this._list.getElementsByTagName('li');
+  componentDidMount(){ 
     this.init();
     this.listener();
-    this.getData((data)=>this.renderOneByOne(data,0)); 
+    this.pushBlog();
   }
   componentWillUnmount(){
+    this.renderOneByOne = ()=>{};
     clearTimeout(this.timmerOneByOne);
     window.removeEventListener('scroll',this.scrollEve);
     window.removeEventListener('resize',this.resizeEve);
   }
-  render(){  
+  render(){
     const styles = {
       li: {
         width:this.state.colWidth,
@@ -41,44 +35,44 @@ export default class Blog extends Component {
         height:this.state.totalHeight,
       }
     }
-    return (
 
-      <Index>
+    return (
       <ul ref={el=>this._list=el} className={style.list} style={styles.list}>
       {this.state.blogs.map( blog=>
         <li key={blog.id} className={style.li} style={styles.li} onClick={()=>this.showBlog(blog.id)}>
         
         <div className={style.pic}>
-          <img className={style.img} src={blog.img} />
+          <img src={'http://zmhjy.xyz/'+blog.thumb_img} />
         </div>
         <div className={style.content}>
-          <p className={style.titlep}>{blog.title}</p>
-          <p className={style.contentp}>{blog.content}</p>
+          <p className={style.title}>{blog.title}</p>
+          <p>{blog.abstract}</p>
           <div className={style.meta}>
 
           {blog.tagsarr.map( tag=>
             <span key={tag} className={style.tag}>{tag}</span> 
           )}
-
             <span className={style.click}>{blog.click}</span>
+        </div>
+        </div> 
+        <div className={style.shade}><span>QC.TEC</span></div>
 
-        </div>
-        </div>
-        
+
         </li>
       )}
       </ul>
-
-      </Index>
     )
   }
 
   showBlog(id){
-    this.props.history.push('/show/'+id);
+    this.props.onShow('/app2/show/'+id);
   }
 
-  pushBlog(data){
-    this.setState((prevState)=>({blogs:prevState.blogs.concat(data)}));
+  pushBlog(){
+    this.props.onFetch(this.page,()=>{
+      this.page++;
+      this.renderOneByOne(this.props.blogs,0)
+    })
   }
 
   init(){
@@ -97,11 +91,11 @@ export default class Blog extends Component {
     this.scrollEve = ()=>{
       var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
       if(scrollTop >= document.body.clientHeight-window.screen.height-200){
-        if (this.lock == false&&this.fetchLock == false) {
-          this.lock = true;
-          this.fetchLock = true;
-          this.getData((data)=>this.renderOneByOne(data,0));     
+        if (this.props.isFetching == false&&this.props.hasMore == true) {
+        if(new Date().getTime()-this.props.lastUpdated>500)
+          this.pushBlog();   
         }
+        
       }
     }
     window.addEventListener('scroll',this.scrollEve);
@@ -117,7 +111,6 @@ export default class Blog extends Component {
         },500);
       }   
     }
-
     window.addEventListener('resize',this.resizeEve);
   }
 
@@ -168,41 +161,16 @@ export default class Blog extends Component {
 
   renderOneByOne(data,i){
     if (i < data.length) {
-      this.pushBlog([data[i]]);
+      this.setState(
+        (prevState)=>({blogs:prevState.blogs.concat([data[i]])})
+      );
       var lis = this._list.getElementsByTagName('li');
       var img = lis[lis.length-1].getElementsByTagName('img')[0];
-      this.imgLoaded(img,()=>this.waterAll(lis));
-      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)},200);
+      this.imgLoaded(img, ()=>this.waterAll(lis));
+      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)}, 500);
     }
     var maxHeight = Math.max.apply(null,this.heights);
     this.setState({totalHeight:maxHeight+'px'}); 
-  }
-
-  getData(callback){
-    this.fetchLock = true;
-    var url = 'http://zmhjy.xyz/api/blogs';
-    var count = 4;
-    var query = '?page='+this.page+'&count='+count;
-    fetchJsonp(url+query, {
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      mode:'no-cors',
-      jsonpCallback: 'api',
-    })
-    .then( res => res.json() )
-    .then( json => {
-      var data = json.data; 
-      for(var i in data){
-        data[i].img = 'http://zmhjy.xyz/'+data[i].thumb_img;
-        data[i].content = data[i].abstract;
-      }
-      callback(data);
-      this.fetchLock = false;
-      this.page+=1;
-      this.lock=false;
-      if (json.next_page_url===null) {
-        window.removeEventListener('scroll',this.scrollEve);
-      }
-    });
   }
 
 }
