@@ -13,7 +13,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: '/app2/'
+    publicPath: '/qcblog-react/dist/'
   },
 
   module: {
@@ -69,16 +69,17 @@ module.exports = {
         names: ['vendor'],
         minChunks: Infinity,
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
     new ExtractTextPlugin("assets/css/styles.css")
   ],
 
   devServer: {
-    contentBase: './dist',
+    contentBase: false,
+    publicPath: "/",
     historyApiFallback: true,
     port: 8725,
     inline: true,
