@@ -13,6 +13,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
+    publicPath: '/app2/'
   },
 
   module: {
@@ -29,7 +30,7 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'/assets/img/[name]_[hash:8].[ext]'
+          name:'assets/img/[name]_[hash:8].[ext]'
         }
       },
       {
@@ -37,7 +38,7 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'/assets/font/[name]_[hash:8].[ext]'
+          name:'assets/font/[name]_[hash:8].[ext]'
         }
       },
       {
@@ -73,7 +74,7 @@ module.exports = {
         warnings: false
       }
     }),
-    new ExtractTextPlugin("/assets/css/styles.css")
+    new ExtractTextPlugin("assets/css/styles.css")
   ],
 
   devServer: {

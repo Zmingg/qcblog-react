@@ -5,6 +5,7 @@ import Detail from '../components/Detail';
 import { showBlog } from '../actions'
 import { connect } from 'react-redux';
 import { push,replace } from 'react-router-redux'
+
 class Show extends Component {
 
 	constructor(props){

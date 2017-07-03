@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
+
 function getBlogs(state = {
   isFetching: false,
   hasMore: true,
@@ -56,6 +57,4 @@ const rootReducer = combineReducers({
   router: routerReducer
 })
 
-
-
-export default rootReducer
+export default rootReducer;
