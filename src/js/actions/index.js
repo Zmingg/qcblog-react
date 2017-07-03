@@ -32,7 +32,7 @@ const fetchBlogs = (page)=>{
 	formData.append("page",page);  
 	return (dispatch)=>{
   	  dispatch(requestFetch());
-      return fetch('//zmhjy.xyz/rapi/blogs',{
+      return fetch('http://zmhjy.xyz/rapi/blogs',{
       	method:'POST',
       	body:formData
       })
