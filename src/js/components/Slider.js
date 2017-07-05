@@ -17,13 +17,10 @@ export default class Slider extends Component {
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.nextIndex].style.opacity = 0;
     this.intervalId = setInterval(this.changeImage,this.interval);
-    var img = this['li'+this.curIndex].getElementsByTagName('img')[0];
-    var check = setInterval(()=>{
-      if (img.complete) {
-        this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
-        clearInterval(check);
-      }
-    },100)
+    var imgs = this['li'+this.curIndex].getElementsByTagName('img');
+    this.imgLoaded(imgs,()=>{
+      this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
+    })
     
   }
   componentWillUnmount(){
@@ -48,6 +45,28 @@ export default class Slider extends Component {
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.curIndex].style.opacity = 1;
     this['li'+this.nextIndex].style.opacity = 0;
+  }
+
+  imgLoaded(datas,cb){
+
+    console.log('imgLoaded')
+    var num = 0;
+    var length = datas.length;
+    for (let i in datas) {
+      let img = new Image();
+      img.onerror = function(){
+        img.onerror = null;
+        num++;
+        num>=length&&cb();
+      }
+      img.onload = function(){
+        img.onload = null;
+        num++;
+        num>=length&&cb();
+      }   
+      img.src = datas[i].src;
+    }
+    
   }
 
 

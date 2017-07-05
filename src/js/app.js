@@ -31,8 +31,8 @@ const Root = ({ store }) => (
     <ConnectedRouter history={newHistory}>
     <div className={style.app}>
     <Index>
-      <Route exact component={Blog} />
-      <Route path="/show/:id" component={Show} />
+      <Route exact path="/" component={Blog} />
+      <Route path="/show/:id" component={Show} /> 
     </Index>
     </div>
     </ConnectedRouter>

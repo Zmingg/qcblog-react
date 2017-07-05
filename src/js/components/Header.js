@@ -11,10 +11,18 @@ export default class Header extends Component {
         zIndex: 9999,
         position: 'fixed',
         top:0,
+        textAlign:'center',
+        fontSize:'20px',
+        fontStyle:'italic',
+        fontFamily:'Tahoma,Arial,"Helvetica Neue","Hiragino Sans GB",Simsun,sans-self',
+        color:'#dcdcdc',
+        lineHeight:'50px',
       }
     }
     return (
-      <header style={style.header}></header>
+      <header style={style.header}>
+        <a>清 尘 居</a>
+      </header>
     )
   }
 

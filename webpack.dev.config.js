@@ -10,7 +10,8 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    publicPath:'/'
   },
 
   module: {
@@ -40,7 +41,8 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'img/[name]_[hash:8].[ext]'
+          name:'img/[name]_[hash:8].[ext]',
+          publicPath:'/'
         }
       },
       {
@@ -48,7 +50,8 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'font/[name]_[hash:8].[ext]'
+          name:'font/[name]_[hash:8].[ext]',
+          publicPath:'/'
         }
       },
       {

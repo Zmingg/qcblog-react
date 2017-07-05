@@ -5,17 +5,17 @@
 }
 
 .app {
-    animation: moveToLeft 1s ease both;
-    @include keyframes(moveToLeft) { 
-    	0% { 
-    		transform: translateY(100%); 
-    		opacity: 0;
-    	} 
-    	100% { 
-    		transform: translateX(0); 
-    		opacity: 1;
-    	} 
-    }
+    // animation: moveToLeft 1s ease both;
+    // @include keyframes(moveToLeft) { 
+    // 	0% { 
+    // 		transform: translateY(100%); 
+    // 		opacity: 0;
+    // 	} 
+    // 	100% { 
+    // 		transform: translateX(0); 
+    // 		opacity: 1;
+    // 	} 
+    // }
 
     list-style-type: none;
     text-decoration: none;

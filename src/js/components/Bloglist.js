@@ -6,8 +6,12 @@ const defaultImg = require('../../img/thumb_default.jpg');
 export default class Bloglist extends Component {
   constructor(props){
     super(props);
-
-    this.state = {blogs:[],totalWidth:'',totalHeight:'500px',colWidth:'',};  
+    this.state = {
+      blogs:[],
+      totalWidth:'',
+      totalHeight:'500px',
+      colWidth:'',
+    };  
     this.col = this.defaultCol = 3;
     this.gapX = 20;
     this.gapY = 30;
@@ -21,7 +25,6 @@ export default class Bloglist extends Component {
     this.pushBlog();
   }
   componentWillUnmount(){
-    this.renderOneByOne = ()=>{};
     clearTimeout(this.timmerOneByOne);
     window.removeEventListener('scroll',this.scrollEve);
     window.removeEventListener('resize',this.resizeEve);
@@ -37,6 +40,7 @@ export default class Bloglist extends Component {
     }
 
     return (
+    <div>
       <ul ref={el=>this._list=el} className={style.list} style={styles.list}>
       {this.state.blogs.map( blog=>
         <li key={blog.id} className={style.li} style={styles.li} onClick={()=>this.showBlog(blog.id)}>
@@ -61,17 +65,27 @@ export default class Bloglist extends Component {
         </li>
       )}
       </ul>
+      <div className={style.loading} style={styles.loading} ref={(el)=>{this.loading=el}}>
+        <i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
     )
   }
 
   showBlog(id){
-    this.props.onShow('/app2/show/'+id);
+    this.props.onShow('/show/'+id);
   }
 
   pushBlog(){
+    this.loading.style.display = '';
+    this.loading.style.opacity = 1;
     this.props.onFetch(this.page,()=>{
       this.page++;
-      this.renderOneByOne(this.props.blogs,0)
+      this.imgLoaded(this.props.blogs,()=>{
+        this.loading.style.opacity = 0;
+        this.renderOneByOne(this.props.blogs,0);
+      })
+      
     })
   }
 
@@ -112,24 +126,43 @@ export default class Bloglist extends Component {
       }   
     }
     window.addEventListener('resize',this.resizeEve);
+
+    this.transitionEnd = (e)=>{
+      if(e.propertyName=='opacity'&&this.state.loading==0){
+        console.log('end')
+        this.loading.style.display = 'none';
+      }
+    }
+    this.loading.addEventListener('transitionend',this.transitionEnd);
+
+    
   }
 
   /*  
   * imgLoaded
-  * param {object} img imageElementNode
+  * param {array} datas 
   * param {function} cb callback
   */
-  imgLoaded(img,cb){
-    img.onerror=()=>{
-      img.src=defaultImg;
-      img.onerror=null;
-    } 
-    var check = setInterval(()=>{
-      if (img.complete) {
-        cb();
-        clearInterval(check);
+  imgLoaded(datas,cb){
+    console.log('imgLoaded')
+    var num = 0;
+    var length = datas.length;
+    for (let i in datas) {
+      let img = new Image();
+      img.onerror = function(){
+        datas[i].thumb_img = 'ass_ama/img/thumb_default.jpg';
+        img.onerror = null;
+        num++;
+        num>=length&&cb();
       }
-    },100)
+      img.onload = function(){
+        img.onload = null;
+        num++;
+        num>=length&&cb();
+      }   
+      img.src = 'http://zmhjy.xyz/'+datas[i].thumb_img;
+    }
+    
   }
 
   waterAll(eles){
@@ -159,15 +192,14 @@ export default class Bloglist extends Component {
     }
   }
 
-  renderOneByOne(data,i){
-    if (i < data.length) {
-      this.setState(
-        (prevState)=>({blogs:prevState.blogs.concat([data[i]])})
-      );
-      var lis = this._list.getElementsByTagName('li');
-      var img = lis[lis.length-1].getElementsByTagName('img')[0];
-      this.imgLoaded(img, ()=>this.waterAll(lis));
-      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)}, 500);
+  renderOneByOne(data,i){ 
+    this.setState(
+      (prevState)=>({blogs:prevState.blogs.concat([data[i]])})
+    );
+    var lis = this._list.getElementsByTagName('li');
+    this.waterAll(lis);
+    if (i < data.length-1) {
+      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)}, 200);
     }
     var maxHeight = Math.max.apply(null,this.heights);
     this.setState({totalHeight:maxHeight+'px'}); 

@@ -11,9 +11,8 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, 'dist'),
     filename: '[name].js',
-    publicPath: '/qcblog-react/dist/'
   },
 
   module: {
@@ -30,7 +29,8 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'assets/img/[name]_[hash:8].[ext]'
+          name:'assets/img/[name]_[hash:8].[ext]',
+          publicPath:'/'
         }
       },
       {
@@ -38,7 +38,8 @@ module.exports = {
         loader: "url-loader",
         options: {
           limit:8192,
-          name:'assets/font/[name]_[hash:8].[ext]'
+          name:'assets/font/[name]_[hash:8].[ext]',
+          publicPath:'/'
         }
       },
       {
@@ -78,12 +79,12 @@ module.exports = {
   ],
 
   devServer: {
-    contentBase: false,
-    publicPath: "/",
-    historyApiFallback: true,
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
     port: 8725,
     inline: true,
     hot:true,
+    historyApiFallback: true,
     disableHostCheck: true
   }
 };

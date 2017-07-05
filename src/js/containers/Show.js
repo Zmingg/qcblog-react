@@ -29,7 +29,7 @@ class Show extends Component {
 			    version = { version }
 			    data = { data }
 				history = { history } 
-				onRoute = { (id)=>disRoute('/app2/show/'+id) }
+				onRoute = { (id)=>disRoute('/show/'+id) }
 				onFetch = { (id,cb)=>disFetch(id).then(cb) }
 			  />
 			</div>

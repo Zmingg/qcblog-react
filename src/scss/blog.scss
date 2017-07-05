@@ -3,7 +3,7 @@ $baseLineHeight: 1.6 !default;
 
 .list {
 	list-style-type: none;
-	margin: 40px auto;
+	margin: 40px auto 0 auto;
 	position: relative;
 	font: #{$baseFontSize}/#{$baseLineHeight} "inherit";
 
@@ -102,4 +102,70 @@ $baseLineHeight: 1.6 !default;
 		right: 8%;
 		color:rgba(255, 255, 255, 0.6);
 	}
+}
+
+@-webkit-keyframes load {
+	0%,40%,100% {
+		-webkit-transform: scaleY(0.1);
+	}
+	20% {
+		-webkit-transform: scaleY(1);
+	}
+}
+
+@keyframes load {
+	0%,40%,100% {
+		transform: scaleY(0.1);
+	}
+	20% {
+		transform: scaleY(1);
+	}
+}
+
+.loading {
+	z-index: 9999;
+	-webkit-transition: 1s;
+	-o-transition: 1s;
+	transition: 1s;
+	opacity: 1;
+	margin: -10px auto 20px auto;
+	width: 50px;
+	height: 40px;
+
+	i {
+		float: left;
+		width: 6px;
+		height: 40px;
+		margin: 0 2px;
+		background: #404040;
+		-webkit-transform: scaleY(0.1);
+		-ms-transform: scaleY(0.1);
+		transform: scaleY(0.1);
+		// -webkit-transform-origin: bottom;
+		// transform-origin: bottom;
+		-webkit-animation: load 1s infinite;
+		animation: load 1s infinite;
+	}
+	i:nth-child(1) {
+	-webkit-animation-delay: 0.1s;
+	animation-delay: 0.1s;
+	}
+	i:nth-child(2) {
+	-webkit-animation-delay: 0.2s;
+	animation-delay: 0.2s;
+	}
+	i:nth-child(3) {
+		-webkit-animation-delay: 0.3s;
+		animation-delay: 0.3s;
+	}
+	i:nth-child(4) {
+		-webkit-animation-delay: 0.4s;
+		animation-delay: 0.4s;
+	}
+	i:nth-child(5) {
+		-webkit-animation-delay: 0.5s;
+		animation-delay: 0.5s;
+	}
+
+
 }
