@@ -14,22 +14,15 @@ class Show extends Component {
 	}
 
 	render(){
-		const style = {
-			detail:{
-				width:'90%',
-				maxWidth:'1000px',
-				margin:'0 auto',
-			}
-		}
 		const { disRoute,disFetch,data,version,history,id,path } = this.props
 		return (
-			<div style={style.detail}>
-			  <Detail 
+			<div style={{minHeight:'200px'}}>
+			  <Detail
 			    id = { this.props.match.params.id }
 			    version = { version }
 			    data = { data }
 				history = { history } 
-				onRoute = { (id)=>disRoute('/show/'+id) }
+				onRoute = { (id)=>disRoute('/app2/show/'+id) }
 				onFetch = { (id,cb)=>disFetch(id).then(cb) }
 			  />
 			</div>

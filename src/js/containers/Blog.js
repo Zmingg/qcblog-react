@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux'
-import { getHotBlogs,showBlog } from '../actions';
+import { getHotBlogs } from '../actions';
 import Index from '../components/Index';
 import Bloglist from '../components/Bloglist';
 

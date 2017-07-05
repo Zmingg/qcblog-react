@@ -14,15 +14,18 @@ export default class Slider extends Component {
   }
 
   componentDidMount(){
+    console.log('SlideMount')
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.nextIndex].style.opacity = 0;
     this.intervalId = setInterval(this.changeImage,this.interval);
-    var imgs = this['li'+this.curIndex].getElementsByTagName('img');
+    var imgs = this.slider.getElementsByTagName('img');
     this.imgLoaded(imgs,()=>{
+
       this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
     })
     
   }
+
   componentWillUnmount(){
     clearInterval(this.intervalId);
     clearTimeout(this.timerid);
@@ -48,20 +51,19 @@ export default class Slider extends Component {
   }
 
   imgLoaded(datas,cb){
-
-    console.log('imgLoaded')
-    var num = 0;
-    var length = datas.length;
-    for (let i in datas) {
+    let num = 0;
+    let length = datas.length;
+    for (let i=0; i<length; i++) {
       let img = new Image();
-      img.onerror = function(){
+      img.onerror = ()=>{
         img.onerror = null;
         num++;
         num>=length&&cb();
       }
-      img.onload = function(){
+      img.onload = ()=>{
         img.onload = null;
         num++;
+        window.loading += 10;
         num>=length&&cb();
       }   
       img.src = datas[i].src;
@@ -97,7 +99,7 @@ export default class Slider extends Component {
       }
     }
   	return (
-      <div className="slider" style={styles.slider}>
+      <div className="slider" style={styles.slider}  ref={el=>this.slider=el}>
         <ul style={styles.ul}>
         {this.imgs.map((img,index) =>
           <li style={styles.li} key={index} ref={el=>this['li'+index]=el}>

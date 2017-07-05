@@ -2,9 +2,10 @@ $baseFontSize: 14px !default;
 $baseLineHeight: 1.8 !default;
 
 .main {
-	width: 100%;
+	width: 95%;
+	max-width: 1000px;
 	background: #f8f5f2;
-	margin: 40px 0;
+	margin: 40px auto;
 	padding: 15px;
 	box-sizing: border-box;
 	font: #{$baseFontSize}/#{$baseLineHeight} "inherit";

@@ -26,6 +26,7 @@ export default class Bloglist extends Component {
   }
   componentWillUnmount(){
     clearTimeout(this.timmerOneByOne);
+    this.loading.removeEventListener('transitionend',this.transitionEnd);
     window.removeEventListener('scroll',this.scrollEve);
     window.removeEventListener('resize',this.resizeEve);
   }
@@ -73,7 +74,7 @@ export default class Bloglist extends Component {
   }
 
   showBlog(id){
-    this.props.onShow('/show/'+id);
+    this.props.onShow('/app2/show/'+id);
   }
 
   pushBlog(){
@@ -82,6 +83,7 @@ export default class Bloglist extends Component {
     this.props.onFetch(this.page,()=>{
       this.page++;
       this.imgLoaded(this.props.blogs,()=>{
+        window.loading += 30;
         this.loading.style.opacity = 0;
         this.renderOneByOne(this.props.blogs,0);
       })
@@ -128,8 +130,7 @@ export default class Bloglist extends Component {
     window.addEventListener('resize',this.resizeEve);
 
     this.transitionEnd = (e)=>{
-      if(e.propertyName=='opacity'&&this.state.loading==0){
-        console.log('end')
+      if(e.propertyName=='opacity'&&this.loading.style.opacity==0){
         this.loading.style.display = 'none';
       }
     }
@@ -144,7 +145,6 @@ export default class Bloglist extends Component {
   * param {function} cb callback
   */
   imgLoaded(datas,cb){
-    console.log('imgLoaded')
     var num = 0;
     var length = datas.length;
     for (let i in datas) {

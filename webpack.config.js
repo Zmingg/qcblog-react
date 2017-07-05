@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+const pubpath = '/app2/';
 
 module.exports = {
   
@@ -13,6 +13,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js',
+    publicPath: pubpath
   },
 
   module: {
@@ -30,7 +31,7 @@ module.exports = {
         options: {
           limit:8192,
           name:'assets/img/[name]_[hash:8].[ext]',
-          publicPath:'/'
+          publicPath:pubpath
         }
       },
       {
@@ -39,7 +40,7 @@ module.exports = {
         options: {
           limit:8192,
           name:'assets/font/[name]_[hash:8].[ext]',
-          publicPath:'/'
+          publicPath:pubpath
         }
       },
       {
@@ -79,7 +80,8 @@ module.exports = {
   ],
 
   devServer: {
-    contentBase: path.join(__dirname, "dist"),
+    // contentBase: path.join(__dirname, "dist"),
+    publicPath: '/app2/',
     compress: true,
     port: 8725,
     inline: true,
