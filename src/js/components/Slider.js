@@ -14,13 +14,11 @@ export default class Slider extends Component {
   }
 
   componentDidMount(){
-    console.log('SlideMount')
     this['li'+this.curIndex].style.zIndex = 102;
     this['li'+this.nextIndex].style.opacity = 0;
     this.intervalId = setInterval(this.changeImage,this.interval);
     var imgs = this.slider.getElementsByTagName('img');
     this.imgLoaded(imgs,()=>{
-
       this.setState({height:this['li'+this.curIndex].offsetHeight+'px'});
     })
     
@@ -67,10 +65,8 @@ export default class Slider extends Component {
         num>=length&&cb();
       }   
       img.src = datas[i].src;
-    }
-    
+    }  
   }
-
 
   render(){
     const styles = {
@@ -90,6 +86,7 @@ export default class Slider extends Component {
         fontSize:0,
         width:'100%',
         transition:this.transition+'ms',
+        WebkitTransition:this.transition+'ms',
         position:'absolute',
         zIndex:100,
         opacity:1,

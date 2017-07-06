@@ -8,8 +8,6 @@ export default class Bloglist extends Component {
     super(props);
     this.state = {
       blogs:[],
-      totalWidth:'',
-      totalHeight:'500px',
       colWidth:'',
     };  
     this.col = this.defaultCol = 3;
@@ -24,25 +22,46 @@ export default class Bloglist extends Component {
     this.listener();
     this.pushBlog();
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.blogs!==this.state.blogs) {
+      return true;
+    }else if(this.state.blogs.length&&nextState.colWidth!==this.state.colWidth){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    let lis = this._list.getElementsByTagName('li');
+    let lastli = lis[lis.length-1];
+    let img = lastli.getElementsByTagName('img')[0];
+    img.onload=()=>{
+      img.onload = null;
+      this.water(lastli);
+    }
+  }
+
   componentWillUnmount(){
     clearTimeout(this.timmerOneByOne);
     this.loading.removeEventListener('transitionend',this.transitionEnd);
+    this.loading.removeEventListener('webkitTransitionEnd',this.transitionEnd);
     window.removeEventListener('scroll',this.scrollEve);
     window.removeEventListener('resize',this.resizeEve);
   }
+
   render(){
     const styles = {
       li: {
         width:this.state.colWidth,
-      },
-      list: {
-        height:this.state.totalHeight,
+        opacity:0,
       }
     }
 
     return (
     <div>
-      <ul ref={el=>this._list=el} className={style.list} style={styles.list}>
+      <ul ref={el=>this._list=el} className={style.list}>
       {this.state.blogs.map( blog=>
         <li key={blog.id} className={style.li} style={styles.li} onClick={()=>this.showBlog(blog.id)}>
         
@@ -67,7 +86,7 @@ export default class Bloglist extends Component {
       )}
       </ul>
       <div className={style.loading} style={styles.loading} ref={(el)=>{this.loading=el}}>
-        <i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
     </div>
     )
@@ -80,14 +99,15 @@ export default class Bloglist extends Component {
   pushBlog(){
     this.loading.style.display = '';
     this.loading.style.opacity = 1;
+    this.isLoading = true;
     this.props.onFetch(this.page,()=>{
       this.page++;
       this.imgLoaded(this.props.blogs,()=>{
-        window.loading += 30;
+        this.page==2&&(window.loading += 30);
         this.loading.style.opacity = 0;
-        this.renderOneByOne(this.props.blogs,0);
+        this.renderOneByOne(this.props.blogs);
+        this.isLoading = false;
       })
-      
     })
   }
 
@@ -101,27 +121,31 @@ export default class Bloglist extends Component {
     }
     this.setState({colWidth:Math.floor((this._list.clientWidth-(this.col-1)*this.gapX)/this.col)});
     this.heights = Array(this.col);
+    for (let i = 0; i < this.heights.length; i++) {
+      this.heights[i] = 0;
+    }
   }
 
   listener(){
     this.scrollEve = ()=>{
       var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
       if(scrollTop >= document.body.clientHeight-window.screen.height-200){
-        if (this.props.isFetching == false&&this.props.hasMore == true) {
+        if (!this.props.isFetching&&!this.isLoading&&this.props.hasMore) {
         if(new Date().getTime()-this.props.lastUpdated>500)
           this.pushBlog();   
         }
-        
       }
     }
     window.addEventListener('scroll',this.scrollEve);
 
     this.resizeEve = ()=>{
-      this.init();
       if(!this.timerid){
         this.timerid = setTimeout(()=>{
-          let lis = this._list.getElementsByTagName('li'); 
-          this.waterAll(lis);
+          this.init();
+          let lis = this._list.getElementsByTagName('li');
+          for (let i = 0; i < lis.length; i++) {
+            this.water(lis[i]);
+          }
           clearTimeout(this.timerid);
           this.timerid = null;
         },500);
@@ -135,18 +159,13 @@ export default class Bloglist extends Component {
       }
     }
     this.loading.addEventListener('transitionend',this.transitionEnd);
-
+    this.loading.addEventListener('webkitTransitionEnd',this.transitionEnd);
     
   }
 
-  /*  
-  * imgLoaded
-  * param {array} datas 
-  * param {function} cb callback
-  */
   imgLoaded(datas,cb){
-    var num = 0;
-    var length = datas.length;
+    let num = 0;
+    let length = datas.length;
     for (let i in datas) {
       let img = new Image();
       img.onerror = function(){
@@ -160,49 +179,45 @@ export default class Bloglist extends Component {
         num++;
         num>=length&&cb();
       }   
-      img.src = 'http://zmhjy.xyz/'+datas[i].thumb_img;
-    }
-    
+      img.src = 'http:\/\/zmhjy\.xyz\/'+datas[i].thumb_img;
+    } 
   }
 
-  waterAll(eles){
-      var changeStyle =(ele)=>{
-        var minCol = this.findMinHeight()[0];
-        var minHeight = this.findMinHeight()[1];
-        ele.style.top = minHeight+'px';
-        ele.style.left = (this.state.colWidth+this.gapX)*minCol+'px';
-        ele.style.opacity = "1";
-        this.heights[minCol] += (ele.clientHeight + this.gapY);
-      }
-      for (var i = 0; i < this.heights.length; i++) {
-        this.heights[i] = 0;
-      }
-      for (var i = 0; i < eles.length; i++) {
-        changeStyle(eles[i]);
-      }
-          
+  water(el){
+    let minCol = this.findMinHeight()[0];
+    let minHeight = this.findMinHeight()[1];
+    el.style.top = minHeight+'px';
+    el.style.left = (this.state.colWidth+this.gapX)*minCol+'px';
+    let timerOp = setTimeout(()=>{
+      el.style.opacity = 1;
+      clearTimeout(timerOp);
+    },100)
+    this.heights[minCol] += (el.clientHeight + this.gapY);
+    let maxHeight = Math.max.apply(null,this.heights);
+    this._list.style.height = maxHeight+'px';
   }
 
   findMinHeight(){
-    var minHeight = Math.min.apply(null,this.heights);
-    for(var i in this.heights){
+    let minHeight = Math.min.apply(null,this.heights);
+    for(let i in this.heights){
       if (this.heights[i] == minHeight){
         return [i,minHeight];
       }
     }
   }
 
-  renderOneByOne(data,i){ 
-    this.setState(
-      (prevState)=>({blogs:prevState.blogs.concat([data[i]])})
-    );
-    var lis = this._list.getElementsByTagName('li');
-    this.waterAll(lis);
-    if (i < data.length-1) {
-      this.timmerOneByOne = setTimeout(()=>{this.renderOneByOne(data,++i)}, 200);
-    }
-    var maxHeight = Math.max.apply(null,this.heights);
-    this.setState({totalHeight:maxHeight+'px'}); 
-  }
+  renderOneByOne(data){ 
+    let i = 0;
+    this.timmerOneByOne=setInterval(()=>{
+      if (i<data.length){
+        this.setState(
+          (prevState)=>({blogs:prevState.blogs.concat([data[i]])})
+        );
+        i++;
+      } else {
+        clearInterval(this.timmerOneByOne);
+      }
+    },100);
 
+  }
 }

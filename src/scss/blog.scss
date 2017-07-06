@@ -3,7 +3,7 @@ $baseLineHeight: 1.6 !default;
 
 .list {
 	list-style-type: none;
-	margin: 40px auto 0 auto;
+	margin: 40px auto;
 	position: relative;
 	font: #{$baseFontSize}/#{$baseLineHeight} "inherit";
 
@@ -25,8 +25,9 @@ $baseLineHeight: 1.6 !default;
 	background: #f8f5f2;
 	box-shadow:0px 1px 10px 0px #111;
 	position:absolute;
-	opacity: 0;
+	// opacity: 0;
 	transition: 1s;
+	-webkit-transition: 1s;
 	cursor: pointer;
 }
 
@@ -90,6 +91,7 @@ $baseLineHeight: 1.6 !default;
     background: rgba(0, 0, 0, 0.8);
     opacity: 0;
     transition: 0.5s;
+    -webkit-transition: 0.5s;
 
     &:hover {
 		opacity: 0.8;
@@ -98,8 +100,8 @@ $baseLineHeight: 1.6 !default;
     span {
 		font-size: 20px;
 		position: relative;
-		top:5%;
-		right: 8%;
+		top: 1em;
+		right: 1em;
 		color:rgba(255, 255, 255, 0.6);
 	}
 }
@@ -128,16 +130,16 @@ $baseLineHeight: 1.6 !default;
 	-o-transition: 1s;
 	transition: 1s;
 	opacity: 1;
-	margin: -10px auto 20px auto;
-	width: 50px;
-	height: 40px;
+	margin: -60px auto 35px auto;
+	width: 60px;
+	height: 25px;
 
 	i {
 		float: left;
 		width: 6px;
 		height: 40px;
 		margin: 0 2px;
-		background: #404040;
+		background: #555555;
 		-webkit-transform: scaleY(0.1);
 		-ms-transform: scaleY(0.1);
 		transform: scaleY(0.1);
@@ -163,6 +165,10 @@ $baseLineHeight: 1.6 !default;
 	i:nth-child(5) {
 		-webkit-animation-delay: 0.5s;
 		animation-delay: 0.5s;
+	}
+	i:nth-child(6) {
+		-webkit-animation-delay: 0.6s;
+		animation-delay: 0.6s;
 	}
 
 

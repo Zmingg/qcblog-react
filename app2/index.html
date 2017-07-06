@@ -73,15 +73,21 @@
       var loading = 0;
       var imgs = document.getElementsByTagName('img');
       var per = load.getElementsByTagName('a')[0];
-      setInterval(function(){
+      var disLoad = function(){
+        console.log()
+        if(this.style.opacity==0){
+          this.style.display = 'none';
+        }
+      }
+      load.addEventListener("transitionend",disLoad);
+      load.addEventListener("webkitTransitionEnd",disLoad)
+      var time = setInterval(function(){
         per.innerHTML = parseInt(loading)+'%';
         if (loading>=100) {
           load.style.opacity = 0;
-          load.addEventListener("transitionend",function(e){
-            if(e.propertyName=='opacity'){
-              load.style.display = 'none';
-            }
-          })
+          clearInterval(time);
+          window.removeEventListener("transitionend",disLoad);
+          window.removeEventListener("webkitTransitionEnd",disLoad);
         }
       },100)
     </script>
