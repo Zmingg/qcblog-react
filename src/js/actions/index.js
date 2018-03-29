@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-
+const Base = 'http://localhost:3000'
 
 const requestFetch = ()=>{
   return {
@@ -10,7 +10,7 @@ const receiveData = (json)=>{
   return {
     type: 'ReceiveData',
     posts: json.data.map(child => child),
-    hasMore: (json.current_page < json.last_page),
+    hasMore: json.hasmore,
     receivedAt: Date.now()
   }
 }
@@ -26,20 +26,17 @@ const shouldFetch = (state)=>{
   }
 }
 
-const fetchBlogs = (page)=>{
-	let formData = new FormData();  
-	formData.append("count",4);  
-	formData.append("page",page);  
-	return (dispatch)=>{
+const fetchBlogs = (page) => {
+	let fd = new FormData();
+	fd.append("count",4);
+	fd.append("page",page);
+	return async (dispatch)=>{
   	  dispatch(requestFetch());
-      return fetch('http://zmhjy.xyz/rapi/blogs',{
+      let res = await fetch(Base + '/blogs_p',{
       	method:'POST',
-      	body:formData
-      })
-        .then( response => response.json() )
-        .then( json => {
-        	dispatch(receiveData(json)) 
-        })
+      	body:fd
+      });
+      dispatch(receiveData(await res.json()));
     }
 }
 

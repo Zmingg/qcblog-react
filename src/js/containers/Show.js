@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { bindActionCreators } from 'redux'
-import Index from '../components/Index';
+import Index from './Index';
 import Detail from '../components/Detail';
 import { showBlog } from '../actions'
 import { connect } from 'react-redux';

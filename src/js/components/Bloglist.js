@@ -3,6 +3,8 @@ import style from '../../scss/blog.scss';
 import { Link } from 'react-router-dom';
 const defaultImg = require('../../img/thumb_default.jpg');
 
+let defaultCol = Symbol('defaultCol');
+
 export default class Bloglist extends Component {
   constructor(props){
     super(props);
@@ -10,14 +12,14 @@ export default class Bloglist extends Component {
       blogs:[],
       colWidth:'',
     };  
-    this.col = this.defaultCol = 3;
+    this.col = this[defaultCol] = 3;
     this.gapX = 20;
     this.gapY = 30;
     this.page = 1;
     this.heights = []
   }
 
-  componentDidMount(){ 
+  componentDidMount(){
     this.init();
     this.listener();
     this.pushBlog();
@@ -26,14 +28,12 @@ export default class Bloglist extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.blogs!==this.state.blogs) {
       return true;
-    }else if(this.state.blogs.length&&nextState.colWidth!==this.state.colWidth){
-      return true;
     }else{
-      return false;
+      return (this.state.blogs.length&&nextState.colWidth!==this.state.colWidth);
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     let lis = this._list.getElementsByTagName('li');
     let lastli = lis[lis.length-1];
     let img = lastli.getElementsByTagName('img')[0];
@@ -86,7 +86,7 @@ export default class Bloglist extends Component {
       )}
       </ul>
       <div className={style.loading} style={styles.loading} ref={(el)=>{this.loading=el}}>
-        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i/><i/><i/><i/><i/><i/>
       </div>
     </div>
     )
@@ -102,8 +102,9 @@ export default class Bloglist extends Component {
     this.isLoading = true;
     this.props.onFetch(this.page,()=>{
       this.page++;
+      console.log(this.props)
       this.imgLoaded(this.props.blogs,()=>{
-        this.page==2&&(window.loading += 30);
+        this.page===2&&(window.loading += 30);
         this.loading.style.opacity = 0;
         this.renderOneByOne(this.props.blogs);
         this.isLoading = false;
@@ -117,7 +118,7 @@ export default class Bloglist extends Component {
     }else if(this._list.clientWidth<768){
       this.col = 2;
     }else{
-      this.col = this.defaultCol;
+      this.col = this[defaultCol];
     }
     this.setState({colWidth:Math.floor((this._list.clientWidth-(this.col-1)*this.gapX)/this.col)});
     this.heights = Array(this.col);
@@ -128,7 +129,7 @@ export default class Bloglist extends Component {
 
   listener(){
     this.scrollEve = ()=>{
-      var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+      let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
       if(scrollTop >= document.body.clientHeight-window.screen.height-200){
         if (!this.props.isFetching&&!this.isLoading&&this.props.hasMore) {
         if(new Date().getTime()-this.props.lastUpdated>500)
@@ -150,14 +151,14 @@ export default class Bloglist extends Component {
           this.timerid = null;
         },500);
       }   
-    }
+    };
     window.addEventListener('resize',this.resizeEve);
 
     this.transitionEnd = (e)=>{
-      if(e.propertyName=='opacity'&&this.loading.style.opacity==0){
+      if(e.propertyName==='opacity'&&this.loading.style.opacity===0){
         this.loading.style.display = 'none';
       }
-    }
+    };
     this.loading.addEventListener('transitionend',this.transitionEnd);
     this.loading.addEventListener('webkitTransitionEnd',this.transitionEnd);
     
@@ -173,12 +174,12 @@ export default class Bloglist extends Component {
         img.onerror = null;
         num++;
         num>=length&&cb();
-      }
+      };
       img.onload = function(){
         img.onload = null;
         num++;
         num>=length&&cb();
-      }   
+      };
       img.src = 'http:\/\/zmhjy\.xyz\/'+datas[i].thumb_img;
     } 
   }
@@ -200,7 +201,7 @@ export default class Bloglist extends Component {
   findMinHeight(){
     let minHeight = Math.min.apply(null,this.heights);
     for(let i in this.heights){
-      if (this.heights[i] == minHeight){
+      if (this.heights[i] === minHeight){
         return [i,minHeight];
       }
     }

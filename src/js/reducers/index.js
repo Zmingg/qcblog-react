@@ -12,10 +12,11 @@ function getBlogs(state = {
         isFetching: true,
       })
     case 'ReceiveData':
+      console.log('receive')
       return Object.assign({}, state, {
         isFetching: false,
         items: action.posts,
-        hasMore: action.hasMore,
+        hasMore: action.hasmore,
         lastUpdated: action.receivedAt
       })
 

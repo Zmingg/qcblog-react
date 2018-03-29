@@ -3,8 +3,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux'
 import { getHotBlogs } from '../actions';
-import Index from '../components/Index';
-import Bloglist from '../components/Bloglist';
+import Bloglist from 'Components/Bloglist';
 
 class Blog extends Component {
   constructor(props){
@@ -27,13 +26,14 @@ class Blog extends Component {
 const mapStateToProps = (state)=>{
   const {
     isFetching,
-    items:blogs,
+    items: posts,
     hasMore,
     lastUpdated
   } = state.blogsPush || { items:[] }
+  console.log(state)
   return {
     isFetching,
-    blogs,
+      posts,
     hasMore,
     lastUpdated
   }

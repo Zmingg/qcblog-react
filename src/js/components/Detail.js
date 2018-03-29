@@ -3,6 +3,7 @@ import style from '../../scss/show.scss';
 
 export default class Detail extends Component {
 
+
 	componentDidUpdate(){
 		window.scroll(0,0);
 	}

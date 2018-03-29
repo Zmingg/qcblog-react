@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import Slider from './Slider';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Slider from '../components/Slider';
 
 
 export default class Index extends Component {
@@ -10,9 +10,9 @@ export default class Index extends Component {
   }
   render(){
     var imgs = [
-      {src:'http://zmhjy.xyz/app/assets/img/bing-1.jpg'},
-      {src:'http://zmhjy.xyz/app/assets/img/bing-2.jpg'},
-      {src:'http://zmhjy.xyz/app/assets/img/bing-3.jpg'}
+      {src:'http://p04p94ehj.bkt.clouddn.com/slider/slider_1.jpg'},
+      {src:'http://p04p94ehj.bkt.clouddn.com/slider/slider_2.jpg'},
+      {src:'http://p04p94ehj.bkt.clouddn.com/slider/slider_3.jpg'}
     ];
     var mainbg = require('../../img/main-bg.png');
     const style = {
