@@ -13,11 +13,13 @@ class Blog extends Component {
   render(){
     const { disFetch,disShow,blogs,isFetching,hasMore,lastUpdated } = this.props;
     return (
-      <Bloglist
-        {...{blogs,isFetching,hasMore,lastUpdated}}
-        onFetch = { (page,cb)=>disFetch(page).then(cb) }
-        onShow = { (route)=>disShow(route) }
-      />
+      <div>
+        <Bloglist
+          {...{blogs,isFetching,hasMore,lastUpdated}}
+          onFetch = { (page,cb)=>disFetch(page).then(cb) }
+          onShow = { (route)=>disShow(route) }
+        />
+      </div>
     )
   }
 
